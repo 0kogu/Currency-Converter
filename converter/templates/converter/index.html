@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <!-- Load the static files template tag -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Currency Converter</h1>
+
+        <!-- Currency Conversion Form -->
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    {{ form.amount }}
+                </div>
+        
+                <div class="form-group">
+                    <label for="from_currency">From</label>
+                    {{ form.from_currency }}
+                </div>
+        
+                <div class="form-group">
+                    <label for="to_currency">To</label>
+                    {{ form.to_currency }}
+                </div>
+            </div>
+        
+            <button type="submit">Convert</button>
+        </form>
+                
+
+        <!-- Display Conversion Result -->
+        {% if conversion_result %}
+            <h2>Conversion Result</h2>
+            {% if conversion_result == "Invalid currency." %}
+                <p>{{ conversion_result }}</p>
+            {% else %}
+                <p>{{ conversion_result.amount }} {{ conversion_result.from_currency }} = 
+                {{ conversion_result.converted_amount }} {{ conversion_result.to_currency }}</p>
+                <p>Conversion rate: 1 {{ conversion_result.from_currency }} = {{ conversion_result.rate }} {{ conversion_result.to_currency }}</p>
+            {% endif %}
+        {% endif %}
+
+        <!-- Conversion History -->
+        <h2>Conversion History</h2>
+        <ul>
+            {% for conversion in history %}
+                <li>{{ conversion.amount }} {{ conversion.from_currency }} = {{ conversion.converted_amount }} {{ conversion.to_currency }} ({{ conversion.date }})</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Button to clear conversion history -->
+        <a href="{% url 'clear_history' %}">Clear History</a>
+    </div>
+</body>
+</html>
